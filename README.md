@@ -1,5 +1,5 @@
 This Project is a Novel Manager App project.
-Author: LDKTC 
+'Author: LDKTC '
 
 Novel Manager App is an App for Story Management, like Story, Timelines, Characters, relations of characters, and Events.
 Built with Electron and SQLite.
