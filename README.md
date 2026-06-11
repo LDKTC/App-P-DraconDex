@@ -17,7 +17,7 @@ On Timeline, you can use it as the Story Main Timeline and multiverse, or as a C
 And in relation, you can use it to mark the relationship between objects you create to show how they have a relation.
 , for example, Char A is in love with Char B, or Char A owns Item C at the moment.
 
-App Function List
+- App Function List
   -Project
   -Project Folder
   -Category
@@ -36,6 +36,7 @@ App Function List
   -Search
   -Import DB
   -Export DB
+
 
     -Project
   Create a project, click on the plus symbol on the header of the project list
