@@ -1,43 +1,44 @@
 This Project is a Novel Manager App project.
-'Author: LDKTC '
+-
+`Author: LDKTC`
 
-Novel Manager App is an App for Story Management, like Story, Timelines, Characters, relations of characters, and Events.
-Built with Electron and SQLite.
-Important note: on version 1.2.0, there will be only Thai Text in the Application.
-Dev plan 1.3.0: will update settings for others language, e.g., English, Japanese, and Korean.
+>Novel Manager App is an App for Story Management, like Story, Timelines, Characters, relations of characters, and Events.  
+>`Built with Electron and SQLite.`  
+>Important note: on version 1.2.0, there will be only Thai Text in the Application.  
+>Dev plan 1.3.0: will update settings for others language, e.g., English, Japanese, and Korean.
 
-Dev Objective: I am a writer who has 100+ stories to write down in a novel, game, etc.
+Dev Objective: I am a writer who has 100+ stories to write down in a novel, game, etc.  
 With that many of infomation, I use many apps for notes, but still confusing in infomation that I have in many apps.
 But all the apps in the market I have tried, there are not useful for my objective.
 So I created this app for Personal use and for any person who has the same problem as me.
-The app is used to memo the character identity, like power, clan, signature, and everything, as custom depending on the story. 
+The app is used to memo the character identity, like power, clan, signature, and everything, as custom depending on the story.
 Many apps I try had the same problem; if there were no paid limits, then there wouldn't be enough functions to use.
 These apps have a custom Category template to create anything in the story you want, like Character, Monster, Item, Artifact, Clan, etc.
 On Timeline, you can use it as the Story Main Timeline and multiverse, or as a Chapter you plan to write.
 And in relation, you can use it to mark the relationship between objects you create to show how they have a relation.
 , for example, Char A is in love with Char B, or Char A owns Item C at the moment.
 
-```text
+
 App Function List
-  -Project,
-  -Project Folder,
-  -Category,
-  -Category Template,
-  -Object,
-  -Object View,
-  -Timeline,
-  -Event,
-  -Relation,
-  -Relation Type,
-  -Relation Graph,
-  -Map,
-  -Area,
-  -Tag,
-  -Color Tag,
-  -Search,
-  -Import DB,
+-
+  -Project,  
+  -Project Folder,  
+  -Category,  
+  -Category Template,  
+  -Object,  
+  -Object View,  
+  -Timeline,  
+  -Event,  
+  -Relation,  
+  -Relation Type,  
+  -Relation Graph,  
+  -Map,  
+  -Area,  
+  -Tag,  
+  -Color Tag,  
+  -Search,  
+  -Import DB,  
   -Export DB
-```
 ```
     -Project
   Create a project, click on the plus symbol on the header of the project list
@@ -145,10 +146,10 @@ App Function List
   I will add the function that allows exporting only the selected project in the future 
 ```
 
-> Update Plan & notice
-```
-  I will give all the code for free until version 2.x.0
-  In version 1.x.0, I will focus on the novel manager function and how flexible to use the app, 
-  and after version 2, I am going to expand the novel manager by creating a World manager,
+Update Plan & notice
+--
+  I will give all the code for free until version 2.x.0  
+  In version 1.x.0, I will focus on the novel manager function and how flexible to use the app,   
+  and after version 2, I am going to expand the novel manager by creating a World manager,  
   a manager that connects all the story Projects in the same world or multiverse setting into one world project that will help me write down the connected story.
-```
+
