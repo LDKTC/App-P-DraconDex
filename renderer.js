@@ -24,6 +24,106 @@ const I = {
   table: `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="10" y1="9" x2="10" y2="21"/></svg>`
 };
 
+const UI_SETTINGS_KEY = 'novel-manager-ui-settings';
+const LEFT_PANEL_COLLAPSED_KEY = 'novel-manager-left-panel-collapsed';
+const UI_THEME_OPTIONS = ['daylight','moonlight','midnight'];
+const UI_LANGUAGE_OPTIONS = ['en','ja','ko','th','zh'];
+const UI_SIZE_MIN = 50;
+const UI_SIZE_MAX = 200;
+const UI_SIZE_STEP = 5;
+const L = {
+  en: {
+    settings:'Settings', theme:'Theme', language:'Language', uiSize:'UI Size',
+    daylight:'Daylight', moonlight:'Moonlight', midnight:'Midnight',
+    openProject:'Open project', closeTab:'Close tab', minimize:'Minimize', maximize:'Maximize', close:'Close',
+    collapsePanel:'Collapse panel', openPanel:'Open panel',
+    projects:'Projects', timeline:'Timeline', relation:'Relations', map:'Mapping', hashtag:'Tags', colors:'Colors',
+    importDb:'Import DB', exportDb:'Export DB', search:'Search...',
+    newFolder:'New folder', newProject:'New project', createProject:'Create project',
+    welcomeTitle:'Novel Manager', welcomeText:'Select a project from the list, or create a new one.',
+    colorPanel:'Colors', saved:'Saved', deleted:'Deleted', created:'Created', applied:'Applied'
+  },
+  ja: {
+    settings:'設定', theme:'テーマ', language:'言語', uiSize:'UIサイズ',
+    daylight:'Daylight', moonlight:'Moonlight', midnight:'Midnight',
+    openProject:'プロジェクトを開く', closeTab:'タブを閉じる', minimize:'最小化', maximize:'最大化', close:'閉じる',
+    collapsePanel:'パネルを折りたたむ', openPanel:'パネルを開く',
+    projects:'プロジェクト', timeline:'タイムライン', relation:'関係', map:'マッピング', hashtag:'タグ', colors:'色',
+    importDb:'DBをインポート', exportDb:'DBをエクスポート', search:'検索...',
+    newFolder:'新規フォルダー', newProject:'新規プロジェクト', createProject:'プロジェクト作成',
+    welcomeTitle:'Novel Manager', welcomeText:'左の一覧からプロジェクトを選ぶか、新しく作成してください。',
+    colorPanel:'色', saved:'保存しました', deleted:'削除しました', created:'作成しました', applied:'適用しました'
+  },
+  ko: {
+    settings:'설정', theme:'테마', language:'언어', uiSize:'UI 크기',
+    daylight:'Daylight', moonlight:'Moonlight', midnight:'Midnight',
+    openProject:'프로젝트 열기', closeTab:'탭 닫기', minimize:'최소화', maximize:'최대화', close:'닫기',
+    collapsePanel:'패널 접기', openPanel:'패널 열기',
+    projects:'프로젝트', timeline:'타임라인', relation:'관계', map:'매핑', hashtag:'태그', colors:'색상',
+    importDb:'DB 가져오기', exportDb:'DB 내보내기', search:'검색...',
+    newFolder:'새 폴더', newProject:'새 프로젝트', createProject:'프로젝트 만들기',
+    welcomeTitle:'Novel Manager', welcomeText:'왼쪽 목록에서 프로젝트를 선택하거나 새 프로젝트를 만드세요.',
+    colorPanel:'색상', saved:'저장됨', deleted:'삭제됨', created:'생성됨', applied:'적용됨'
+  },
+  th: {
+    settings:'ตั้งค่า', theme:'ธีม', language:'ภาษา', uiSize:'ขนาด UI',
+    daylight:'Daylight', moonlight:'Moonlight', midnight:'Midnight',
+    openProject:'เปิดโปรเจกต์', closeTab:'ปิดแท็บ', minimize:'ย่อหน้าต่าง', maximize:'ขยายหน้าต่าง', close:'ปิด',
+    collapsePanel:'พับ Panel', openPanel:'เปิด Panel',
+    projects:'โปรเจกต์', timeline:'Timeline', relation:'ความสัมพันธ์', map:'Mapping', hashtag:'ป้ายกำกับ', colors:'สี',
+    importDb:'Import DB', exportDb:'Export DB', search:'ค้นหา...',
+    newFolder:'สร้างโฟลเดอร์ใหม่', newProject:'สร้างโปรเจกต์ใหม่', createProject:'สร้างโปรเจกต์ใหม่',
+    welcomeTitle:'Novel Manager', welcomeText:'เลือกโปรเจกต์จากรายการทางซ้าย หรือสร้างโปรเจกต์ใหม่',
+    colorPanel:'สี', saved:'บันทึกแล้ว', deleted:'ลบแล้ว', created:'สร้างแล้ว', applied:'ปรับใช้แล้ว'
+  },
+  zh: {
+    settings:'设置', theme:'主题', language:'语言', uiSize:'界面大小',
+    daylight:'Daylight', moonlight:'Moonlight', midnight:'Midnight',
+    openProject:'打开项目', closeTab:'关闭标签', minimize:'最小化', maximize:'最大化', close:'关闭',
+    collapsePanel:'收起面板', openPanel:'打开面板',
+    projects:'项目', timeline:'时间线', relation:'关系', map:'映射', hashtag:'标签', colors:'颜色',
+    importDb:'导入 DB', exportDb:'导出 DB', search:'搜索...',
+    newFolder:'新建文件夹', newProject:'新建项目', createProject:'创建项目',
+    welcomeTitle:'Novel Manager', welcomeText:'从左侧列表选择项目，或创建一个新项目。',
+    colorPanel:'颜色', saved:'已保存', deleted:'已删除', created:'已创建', applied:'已应用'
+  }
+};
+const LANGUAGE_LABELS = { en:'ENG - English', ja:'JP - 日本語', ko:'KR - 한국어', th:'TH - ไทย', zh:'CN - 中文' };
+const COMMON_UI_TEXT = {
+  'ยกเลิก': { en:'Cancel', ja:'キャンセル', ko:'취소', zh:'取消' },
+  'บันทึก': { en:'Save', ja:'保存', ko:'저장', zh:'保存' },
+  'สร้าง': { en:'Create', ja:'作成', ko:'생성', zh:'创建' },
+  'ลบ': { en:'Delete', ja:'削除', ko:'삭제', zh:'删除' },
+  'แก้ไข': { en:'Edit', ja:'編集', ko:'수정', zh:'编辑' },
+  'เพิ่ม': { en:'Add', ja:'追加', ko:'추가', zh:'添加' },
+  'จัดการ': { en:'Manage', ja:'管理', ko:'관리', zh:'管理' },
+  'ชื่อ *': { en:'Name *', ja:'名前 *', ko:'이름 *', zh:'名称 *' },
+  'ชื่อ': { en:'Name', ja:'名前', ko:'이름', zh:'名称' },
+  'รายละเอียด': { en:'Details', ja:'詳細', ko:'상세', zh:'详情' },
+  'สี': { en:'Color', ja:'色', ko:'색상', zh:'颜色' },
+  'โปรเจกต์': { en:'Projects', ja:'プロジェクト', ko:'프로젝트', zh:'项目' },
+  'สร้างโปรเจกต์ใหม่': { en:'New project', ja:'新規プロジェクト', ko:'새 프로젝트', zh:'新建项目' },
+  'สร้างโฟลเดอร์ใหม่': { en:'New folder', ja:'新規フォルダー', ko:'새 폴더', zh:'新建文件夹' },
+  'โปรเจกต์ใหม่': { en:'New project', ja:'新規プロジェクト', ko:'새 프로젝트', zh:'新建项目' },
+  'โฟลเดอร์ใหม่': { en:'New folder', ja:'新規フォルダー', ko:'새 폴더', zh:'新建文件夹' },
+  'ป้ายกำกับ': { en:'Tags', ja:'タグ', ko:'태그', zh:'标签' },
+  'ความสัมพันธ์': { en:'Relations', ja:'関係', ko:'관계', zh:'关系' },
+  'บันทึกเรียบร้อยแล้ว': { en:'Saved', ja:'保存しました', ko:'저장됨', zh:'已保存' },
+  'ลบเรียบร้อยแล้ว': { en:'Deleted', ja:'削除しました', ko:'삭제됨', zh:'已删除' },
+  'สร้างแล้ว': { en:'Created', ja:'作成しました', ko:'생성됨', zh:'已创建' }
+};
+
+function loadUiSettings(){
+  let saved = {};
+  try{ saved = JSON.parse(localStorage.getItem(UI_SETTINGS_KEY) || '{}'); }
+  catch(e){ saved = {}; }
+  const theme = UI_THEME_OPTIONS.includes(saved.theme) ? saved.theme : 'midnight';
+  const language = UI_LANGUAGE_OPTIONS.includes(saved.language) ? saved.language : 'th';
+  const savedSize = Number(saved.size);
+  const size = Number.isFinite(savedSize) ? Math.min(UI_SIZE_MAX, Math.max(UI_SIZE_MIN, savedSize)) : 100;
+  return { theme, language, size };
+}
+
 const S = {
   folders:[], projects:[], colors:[],
   recentColors:[],
@@ -32,15 +132,29 @@ const S = {
   descOpen:false, openFolders:new Set(),
   view:'projects',
   catView:'list',
+  projectTabs:[],
+  activeProjectTabId:null,
+  settings:loadUiSettings(),
+  relListHeight:null,
+  leftPanelCollapsed:localStorage.getItem(LEFT_PANEL_COLLAPSED_KEY) === '1',
 };
 const timelineGraphState = {};
 let timelineGraphCleanup = null;
+let konvaStage = null;
 
 async function init() {
+  applyUiSettings();
   S.colors       = await api.color.getAll();
   S.recentColors = await api.color.getRecent();
   S.folders      = await api.folder.getAll();
   S.projects     = await api.project.getAll();
+  bindWindowChrome();
+  bindLeftPanelToggle();
+  applyLeftPanelState();
+  observeUiLanguage();
+  renderSettingsMenu();
+  translateStaticChrome();
+  renderProjectTabs();
   renderSidebar();
   renderWelcome();
   bindNav();
@@ -76,6 +190,265 @@ function openModal(title,body) {
   if(modalEl){ modalEl.tabIndex = -1; setTimeout(()=>{ try{ modalEl.focus(); }catch(e){} }, 30); }
 }
 function closeModal() { q('#modal-overlay').classList.add('hidden'); }
+
+function applyLeftPanelState(){
+  q('#app')?.classList.toggle('left-panel-collapsed', S.leftPanelCollapsed);
+  q('#left-panel-collapse')?.setAttribute('title', S.leftPanelCollapsed ? t('openPanel') : t('collapsePanel'));
+  q('#left-panel-peek')?.setAttribute('title', t('openPanel'));
+}
+
+function setLeftPanelCollapsed(collapsed){
+  S.leftPanelCollapsed = !!collapsed;
+  localStorage.setItem(LEFT_PANEL_COLLAPSED_KEY, S.leftPanelCollapsed ? '1' : '0');
+  applyLeftPanelState();
+}
+
+function bindLeftPanelToggle(){
+  q('#left-panel-collapse')?.addEventListener('click', () => setLeftPanelCollapsed(true));
+  q('#left-panel-peek')?.addEventListener('click', () => setLeftPanelCollapsed(false));
+}
+
+function t(key){
+  const lang = S.settings?.language || 'th';
+  return L[lang]?.[key] || L.en[key] || key;
+}
+
+function saveUiSettings(){
+  localStorage.setItem(UI_SETTINGS_KEY, JSON.stringify(S.settings));
+}
+
+function applyUiSettings(){
+  document.body.dataset.theme = S.settings.theme;
+  document.documentElement.lang = S.settings.language;
+  document.documentElement.style.setProperty('--ui-scale', String(S.settings.size / 100));
+}
+
+function setUiSetting(key, value){
+  if(key === 'theme' && !UI_THEME_OPTIONS.includes(value)) return;
+  if(key === 'language' && !UI_LANGUAGE_OPTIONS.includes(value)) return;
+  if(key === 'size'){
+    value = Number(value);
+    if(!Number.isFinite(value)) return;
+    value = Math.min(UI_SIZE_MAX, Math.max(UI_SIZE_MIN, Math.round(value)));
+  }
+  S.settings[key] = value;
+  saveUiSettings();
+  applyUiSettings();
+  renderSettingsMenu();
+  translateStaticChrome();
+  renderProjectTabs();
+  if(key === 'language') switchView(S.view || 'projects');
+  toast(t('applied'),'ok');
+}
+
+function setUiSizeFromSlider(value){
+  const size = Math.min(UI_SIZE_MAX, Math.max(UI_SIZE_MIN, Math.round(Number(value) || 100)));
+  S.settings.size = size;
+  saveUiSettings();
+  applyUiSettings();
+  const valueEl = q('#settings-size-value');
+  if(valueEl) valueEl.textContent = `${size}%`;
+}
+
+function updateUiSizeLabel(value){
+  const size = Math.min(UI_SIZE_MAX, Math.max(UI_SIZE_MIN, Math.round(Number(value) || 100)));
+  const valueEl = q('#settings-size-value');
+  if(valueEl) valueEl.textContent = `${size}%`;
+}
+
+function renderSettingsMenu(){
+  const menu = q('#settings-menu');
+  if(!menu) return;
+  const themeButtons = UI_THEME_OPTIONS.map(theme =>
+    `<button class="settings-option ${S.settings.theme===theme?'active':''}" onclick="setUiSetting('theme','${theme}')">${t(theme)}</button>`
+  ).join('');
+  const languageOptions = UI_LANGUAGE_OPTIONS.map(lang =>
+    `<option value="${lang}" ${S.settings.language===lang?'selected':''}>${LANGUAGE_LABELS[lang]}</option>`
+  ).join('');
+  menu.innerHTML = `
+    <div class="settings-head">
+      <span>${t('settings')}</span>
+      <button class="settings-close" onclick="toggleSettingsMenu(false)" title="${t('close')}">x</button>
+    </div>
+    <div class="settings-group">
+      <div class="settings-label">${t('theme')}</div>
+      <div class="settings-options">${themeButtons}</div>
+    </div>
+    <div class="settings-group">
+      <div class="settings-label">${t('language')}</div>
+      <select class="settings-select" onchange="setUiSetting('language', this.value)">
+        ${languageOptions}
+      </select>
+    </div>
+    <div class="settings-group">
+      <div class="settings-label settings-label-row">
+        <span>${t('uiSize')}</span>
+        <span id="settings-size-value">${S.settings.size}%</span>
+      </div>
+      <input class="settings-slider" type="range" min="${UI_SIZE_MIN}" max="${UI_SIZE_MAX}" step="${UI_SIZE_STEP}" value="${S.settings.size}" oninput="updateUiSizeLabel(this.value)" onchange="setUiSizeFromSlider(this.value)">
+      <div class="settings-slider-scale"><span>${UI_SIZE_MIN}%</span><span>100%</span><span>${UI_SIZE_MAX}%</span></div>
+    </div>
+  `;
+}
+
+function toggleSettingsMenu(force){
+  const menu = q('#settings-menu');
+  const btn = q('#settings-menu-btn');
+  if(!menu || !btn) return;
+  const open = typeof force === 'boolean' ? force : menu.classList.contains('hidden');
+  menu.classList.toggle('hidden', !open);
+  btn.classList.toggle('active', open);
+  btn.setAttribute('aria-expanded', String(open));
+}
+
+function translateStaticChrome(){
+  q('#settings-menu-btn')?.setAttribute('title', t('settings'));
+  q('#new-project-tab')?.setAttribute('title', t('openProject'));
+  q('#win-min')?.setAttribute('title', t('minimize'));
+  q('#win-max')?.setAttribute('title', t('maximize'));
+  q('#win-close')?.setAttribute('title', t('close'));
+  q('#search-input')?.setAttribute('placeholder', t('search'));
+  document.querySelectorAll('.nav-btn[data-panel]').forEach(btn => {
+    const key = btn.dataset.panel;
+    if(L.en[key]) btn.setAttribute('title', t(key));
+  });
+  q('#btn-import-db')?.setAttribute('title', t('importDb'));
+  q('#btn-export-db')?.setAttribute('title', t('exportDb'));
+  applyLeftPanelState();
+  translateCommonUiText();
+}
+
+function translateCommonUiText(root=document){
+  const lang = S.settings?.language || 'th';
+  if(lang === 'th') return;
+  const pick = (text) => COMMON_UI_TEXT[text]?.[lang] || null;
+  const selectors = [
+    'button',
+    '.fg label',
+    '.ph h4',
+    '.empty h3',
+    '.empty p',
+    '.settings-label',
+    '.settings-head span',
+    '#modal-title'
+  ].join(',');
+  root.querySelectorAll(selectors).forEach(el => {
+    el.childNodes.forEach(node => {
+      if(node.nodeType !== Node.TEXT_NODE) return;
+      const value = node.nodeValue || '';
+      const trimmed = value.trim();
+      const translated = pick(trimmed);
+      if(!translated) return;
+      const lead = value.match(/^\s*/)?.[0] || '';
+      const trail = value.match(/\s*$/)?.[0] || '';
+      node.nodeValue = `${lead}${translated}${trail}`;
+    });
+  });
+  root.querySelectorAll('[placeholder],[title]').forEach(el => {
+    ['placeholder','title'].forEach(attr => {
+      const value = el.getAttribute(attr);
+      if(!value) return;
+      const translated = pick(value.trim());
+      if(translated) el.setAttribute(attr, translated);
+    });
+  });
+}
+
+let _uiTranslateTimer = null;
+function observeUiLanguage(){
+  const observer = new MutationObserver(() => {
+    clearTimeout(_uiTranslateTimer);
+    _uiTranslateTimer = setTimeout(() => translateCommonUiText(), 0);
+  });
+  observer.observe(document.body, { childList:true, subtree:true });
+}
+
+function bindWindowChrome(){
+  q('#win-min')?.addEventListener('click', () => api.window.minimize());
+  q('#win-max')?.addEventListener('click', () => api.window.toggleMaximize());
+  q('#win-close')?.addEventListener('click', () => api.window.close());
+  q('#settings-menu-btn')?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleSettingsMenu();
+  });
+  q('#settings-menu')?.addEventListener('click', e => e.stopPropagation());
+  document.addEventListener('click', () => toggleSettingsMenu(false));
+  q('#new-project-tab')?.addEventListener('click', () => {
+    S.project = null; S.category = null; S.object = null; S.timeline = null; S.map = null; S.mapAreaId = null;
+    S.activeProjectTabId = null;
+    S.view = 'projects';
+    document.querySelectorAll('.nav-btn[data-panel]').forEach(b=>b.classList.remove('active'));
+    q('.nav-btn[data-panel="projects"]')?.classList.add('active');
+    renderProjectTabs();
+    renderSidebar();
+    renderWelcome();
+  });
+}
+
+function tabFromProject(project){
+  return {
+    id: project.id,
+    name: project.name || 'Untitled',
+    codename: project.codename || '',
+    color: project.color_code || '#6366f1',
+  };
+}
+
+function upsertProjectTab(project){
+  const next = tabFromProject(project);
+  const idx = S.projectTabs.findIndex(t => t.id === next.id);
+  if(idx >= 0) S.projectTabs[idx] = next;
+  else S.projectTabs.push(next);
+  S.activeProjectTabId = next.id;
+  renderProjectTabs();
+}
+
+function renderProjectTabs(){
+  const el = q('#project-tabs');
+  if(!el) return;
+  el.innerHTML = S.projectTabs.map(tab => `
+    <button class="project-tab ${S.activeProjectTabId===tab.id?'active':''}" onclick="switchProjectTab(${tab.id})" title="${x(tab.name)}">
+      <span class="tab-dot" style="background:${tab.color}"></span>
+      <span class="tab-name">${x(tab.name)}</span>
+      <span class="tab-close" onclick="event.stopPropagation();closeProjectTab(${tab.id})" title="${t('closeTab')}">&times;</span>
+    </button>
+  `).join('');
+  document.title = S.project ? `${S.project.name} - Novel Manager` : 'Novel Manager';
+}
+
+async function switchProjectTab(id){
+  const project = await api.project.get(id);
+  if(!project){
+    await closeProjectTab(id);
+    return;
+  }
+  upsertProjectTab(project);
+  await activateProject(project);
+}
+
+async function closeProjectTab(id){
+  const idx = S.projectTabs.findIndex(t => t.id === id);
+  if(idx < 0) return;
+  const wasActive = S.activeProjectTabId === id;
+  S.projectTabs.splice(idx, 1);
+  if(!wasActive){
+    renderProjectTabs();
+    return;
+  }
+  const next = S.projectTabs[idx] || S.projectTabs[idx - 1] || null;
+  if(next){
+    await switchProjectTab(next.id);
+    return;
+  }
+  S.activeProjectTabId = null;
+  S.project = null; S.category = null; S.object = null; S.timeline = null; S.map = null; S.mapAreaId = null;
+  S.view = 'projects';
+  document.querySelectorAll('.nav-btn[data-panel]').forEach(b=>b.classList.remove('active'));
+  q('.nav-btn[data-panel="projects"]')?.classList.add('active');
+  renderProjectTabs();
+  renderSidebar();
+  renderWelcome();
+}
 
 // ═══ COLOR PICKER ══════════════════════════════════════
 function buildColorSwatches(colors, selId){
@@ -251,26 +624,36 @@ async function importDatabaseFile(){
 }
 
 function switchView(v) {
+  if (konvaStage) {
+    try { konvaStage.destroy(); } catch(e){}
+    konvaStage = null;
+  }
   q('#main-inner')?.classList.toggle('relation-main', v === 'relation');
   if      (v==='projects') { renderSidebar(); if(S.project) renderProject(); else renderWelcome(); }
   else if (v==='timeline') renderTimelineView();
   else if (v==='relation') renderRelationView();
   else if (v==='map')      renderMapView();
   else if (v==='hashtag')  renderHashtagView();
-  else if (v==='colors')   { q('#left-panel-inner').innerHTML=`<div class="ph"><h4>สี</h4></div>`; renderColorSettings(); }
+  else if (v==='colors')   { q('#left-panel-inner').innerHTML=`<div class="ph"><h4>${t('colorPanel')}</h4></div>`; renderColorSettings(); }
 }
 
 // ═══ SIDEBAR ═══════════════════════════════════════════
 async function reloadSidebar() {
   S.folders  = await api.folder.getAll();
   S.projects = await api.project.getAll();
+  const byId = new Map(S.projects.map(p => [p.id, p]));
+  S.projectTabs = S.projectTabs
+    .filter(t => byId.has(t.id))
+    .map(t => tabFromProject(byId.get(t.id)));
+  if(S.activeProjectTabId && !byId.has(S.activeProjectTabId)) S.activeProjectTabId = null;
+  renderProjectTabs();
   renderSidebar();
 }
 
 function renderSidebar() {
-  let h = `<div class="ph"><h4>โปรเจกต์</h4>
-    <button class="btn btn-g btn-i" onclick="openFolderModal()" title="สร้างโฟลเดอร์ใหม่">${I.folder}</button>
-    <button class="btn btn-g btn-i" onclick="openProjectModal()" title="สร้างโปรเจกต์ใหม่">${I.plus}</button>
+  let h = `<div class="ph"><h4>${t('projects')}</h4>
+    <button class="btn btn-g btn-i" onclick="openFolderModal()" title="${t('newFolder')}">${I.folder}</button>
+    <button class="btn btn-g btn-i" onclick="openProjectModal()" title="${t('newProject')}">${I.plus}</button>
   </div>`;
   for(const f of S.folders){
     const open=S.openFolders.has(f.id), fps=S.projects.filter(p=>p.folder_id===f.id), col=f.color_code||'#6366f1';
@@ -306,9 +689,9 @@ function tglFolder(id){ S.openFolders.has(id)?S.openFolders.delete(id):S.openFol
 function renderWelcome() {
   q('#main-inner')?.classList.remove('relation-main');
   q('#main-inner').innerHTML = `<div class="empty" style="margin-top:80px">
-    <div class="ei">${I.book}</div><h3>Novel Manager</h3>
-    <p>เลือกโปรเจกต์จากรายการทางซ้าย หรือสร้างโปรเจกต์ใหม่</p>
-    <button class="btn btn-p" onclick="openProjectModal()">${I.plus} สร้างโปรเจกต์ใหม่</button>
+    <div class="ei">${I.book}</div><h3>${t('welcomeTitle')}</h3>
+    <p>${t('welcomeText')}</p>
+    <button class="btn btn-p" onclick="openProjectModal()">${I.plus} ${t('createProject')}</button>
   </div>`;
 }
 
@@ -352,11 +735,20 @@ function renderRelList(relations){
 
 // ═══ PROJECT VIEW ══════════════════════════════════════
 async function selectProject(id) {
-  S.project = await api.project.get(id); S.object=null; S.timeline=null; S.map=null; S.mapAreaId=null;
-  const cats = await api.category.getAll(id); S.category=cats[0]||null;
+  const project = await api.project.get(id);
+  if(!project) return;
+  upsertProjectTab(project);
+  await activateProject(project);
+}
+
+async function activateProject(project) {
+  S.project = project; S.object=null; S.timeline=null; S.map=null; S.mapAreaId=null;
+  S.activeProjectTabId = project.id;
+  const cats = await api.category.getAll(project.id); S.category=cats[0]||null;
   S.view = 'projects';
   document.querySelectorAll('.nav-btn[data-panel]').forEach(b=>b.classList.remove('active'));
   q('.nav-btn[data-panel="projects"]').classList.add('active');
+  renderProjectTabs();
   renderSidebar(); await renderProject();
 }
 
@@ -914,7 +1306,7 @@ async function renderTimelineDetail(tlid){
   let h = `<div class="ch">
     <div class="cdot" style="background:${col}"></div><h2>${x(tl.line_name||'ไม่มีชื่อ')}</h2>
     <button class="btn btn-s btn-i" onclick="openTimelineModal(${tl.id})">${I.edit}</button>
-    <button class="btn btn-p" onclick="openEventModal(${tl.id})" style="padding:6px 12px;font-size:12.5px">${I.plus} เพิ่มเหตุการณ์</button>
+    <button class="btn btn-p" onclick="openEventModal(${tlid})" style="padding:6px 12px;font-size:12.5px">${I.plus} เพิ่มเหตุการณ์</button>
   </div>`;
 
   if(!evs.length){
@@ -1192,7 +1584,7 @@ const wbViewState = {catView:{}, objView:{}, projectView:{}};
 async function renderForceGraph(graphData, opts={}){
   const c = q('#wb-container');
   if(!c) return;
-  c.innerHTML = `<div id="react-graph"></div>`;
+  c.innerHTML = `<div id="react-graph"></div><div class="rel-resize-handle" title="Drag to resize graph"></div>`;
   await ensureD3();
   await renderForceGraphWithD3(graphData, opts);
 }
@@ -1347,6 +1739,7 @@ async function renderRelationView(){
       <svg id="wb-svg" class="rel-svg"></svg>
       <div id="wb-nodes" class="rel-nodes"></div>
     </div>
+    <div class="rel-list-slider" onmousedown="startRelListResize(event)" title="Drag to resize relation list"></div>
     <div class="rel-underboard">
       <div class="ph">
         <h4>ความสัมพันธ์ที่กำลังแสดงอยู่</h4>
@@ -1373,6 +1766,7 @@ async function renderRelationView(){
       <svg id="wb-svg" class="rel-svg"></svg>
       <div id="wb-nodes" class="rel-nodes"></div>
     </div>
+    <div class="rel-list-slider" onmousedown="startRelListResize(event)" title="Drag to resize relation list"></div>
     <div class="rel-underboard">
       <div class="ph">
         <h4>ความสัมพันธ์ที่กำลังแสดงอยู่</h4>
@@ -1394,6 +1788,7 @@ async function renderRelationView(){
       <svg id="wb-svg" class="rel-svg"></svg>
       <div id="wb-nodes" class="rel-nodes"></div>
     </div>
+    <div class="rel-list-slider" onmousedown="startRelListResize(event)" title="Drag to resize relation list"></div>
     <div class="rel-underboard">
       <div class="ph">
         <h4>ความสัมพันธ์ที่กำลังแสดงอยู่</h4>
@@ -1408,6 +1803,7 @@ async function renderRelationView(){
     setTimeout(async()=>{ await renderProjectWhiteboard(S.project.id); },10);
   }
   q('#main-inner').innerHTML = h;
+  applyRelListHeight();
 }
 
 async function renderCategoryWhiteboard(catId){
@@ -1528,6 +1924,36 @@ async function renderProjectWhiteboard(projectId){
 
 let dragState=null;
 let panState=null;
+let wbResizeState=null;
+let relListResizeState=null;
+
+function applyRelListHeight(){
+  const listPanel = q('.relation-main .rel-underboard');
+  if(!listPanel) return;
+  if(S.relListHeight){
+    listPanel.style.flex = `0 0 ${S.relListHeight}px`;
+    listPanel.style.height = `${S.relListHeight}px`;
+  } else {
+    listPanel.style.flex = '';
+    listPanel.style.height = '';
+  }
+}
+
+function startRelListResize(e){
+  if(e.button !== 0) return;
+  const listPanel = q('.relation-main .rel-underboard');
+  const graphPanel = q('#wb-container');
+  if(!listPanel || !graphPanel) return;
+  e.preventDefault();
+  const listRect = listPanel.getBoundingClientRect();
+  const graphRect = graphPanel.getBoundingClientRect();
+  q('#main-inner')?.classList.add('is-rel-list-resizing');
+  relListResizeState = {
+    startY:e.clientY,
+    startListH:listRect.height,
+    startGraphH:graphRect.height,
+  };
+}
 
 function getWbViewStore(viewType){
   if(viewType==='cat') return wbViewState.catView;
@@ -1536,8 +1962,16 @@ function getWbViewStore(viewType){
 }
 function ensureWbViewState(viewType,viewId){
   const store = getWbViewStore(viewType);
-  if(!store[viewId]) store[viewId] = { scale:1, tx:0, ty:0 };
+  if(!store[viewId]) store[viewId] = { scale:1, tx:0, ty:0, width:null, height:null };
   return store[viewId];
+}
+function applyWhiteboardSize(viewType,viewId){
+  const c = q('#wb-container');
+  if(!c) return;
+  const t = ensureWbViewState(viewType, viewId);
+  c.style.flex = t.width || t.height ? '0 0 auto' : '';
+  c.style.width = t.width ? `${t.width}px` : '';
+  c.style.height = t.height ? `${t.height}px` : '';
 }
 function applyWhiteboardTransform(viewType,viewId){
   const t = ensureWbViewState(viewType, viewId);
@@ -1553,6 +1987,7 @@ function applyWhiteboardTransform(viewType,viewId){
 function bindWhiteboardInteractions(viewType,viewId){
   const c = q('#wb-container');
   if(!c) return;
+  applyWhiteboardSize(viewType, viewId);
   c.oncontextmenu = (e)=>e.preventDefault();
   c.onwheel = (e)=>{
     e.preventDefault();
@@ -1576,6 +2011,25 @@ function bindWhiteboardInteractions(viewType,viewId){
     c.classList.add('is-panning');
     panState = { viewType, viewId, startX:e.clientX, startY:e.clientY };
   };
+  const resizeHandle = c.querySelector('.rel-resize-handle');
+  if(resizeHandle){
+    resizeHandle.onmousedown = (e)=>{
+      if(e.button !== 0) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const rect = c.getBoundingClientRect();
+      c.classList.add('is-resizing');
+      wbResizeState = {
+        viewType,
+        viewId,
+        startX:e.clientX,
+        startY:e.clientY,
+        startW:rect.width,
+        startH:rect.height,
+        maxW:Math.max(420, c.parentElement?.clientWidth || rect.width),
+      };
+    };
+  }
 }
 
 function startNodeDrag(e,objId,viewType,viewId){
@@ -1584,6 +2038,33 @@ function startNodeDrag(e,objId,viewType,viewId){
   dragState={objId,viewType,viewId,startX:e.clientX,startY:e.clientY};
 }
 document.addEventListener('mousemove',function(e){
+  if(relListResizeState){
+    const listPanel = q('.relation-main .rel-underboard');
+    const graphPanel = q('#wb-container');
+    if(listPanel && graphPanel){
+      const delta = relListResizeState.startY - e.clientY;
+      const nextListH = Math.max(180, Math.min(760, relListResizeState.startListH + delta));
+      const nextGraphH = Math.max(220, relListResizeState.startGraphH - delta);
+      S.relListHeight = Math.round(nextListH);
+      listPanel.style.flex = `0 0 ${S.relListHeight}px`;
+      listPanel.style.height = `${S.relListHeight}px`;
+      graphPanel.style.flex = '0 0 auto';
+      graphPanel.style.height = `${Math.round(nextGraphH)}px`;
+    }
+    return;
+  }
+  if(wbResizeState){
+    const c = q('#wb-container');
+    if(c){
+      const t = ensureWbViewState(wbResizeState.viewType, wbResizeState.viewId);
+      const nextW = Math.max(360, Math.min(wbResizeState.maxW, wbResizeState.startW + e.clientX - wbResizeState.startX));
+      const nextH = Math.max(260, Math.min(1000, wbResizeState.startH + e.clientY - wbResizeState.startY));
+      t.width = Math.round(nextW);
+      t.height = Math.round(nextH);
+      applyWhiteboardSize(wbResizeState.viewType, wbResizeState.viewId);
+    }
+    return;
+  }
   if(panState){
     const t = ensureWbViewState(panState.viewType, panState.viewId);
     t.tx += e.clientX - panState.startX;
@@ -1611,18 +2092,44 @@ document.addEventListener('mousemove',function(e){
   }
 });
 document.addEventListener('mouseup',function(){
+  if(relListResizeState){
+    relListResizeState = null;
+    q('#main-inner')?.classList.remove('is-rel-list-resizing');
+    return;
+  }
+  if(wbResizeState){
+    const { viewType, viewId } = wbResizeState;
+    wbResizeState = null;
+    q('#wb-container')?.classList.remove('is-resizing');
+    if(viewType==='cat') setTimeout(()=>renderCategoryWhiteboard(viewId),0);
+    else if(viewType==='obj') setTimeout(()=>renderObjectWhiteboard(viewId),0);
+    else setTimeout(()=>renderProjectWhiteboard(viewId),0);
+    return;
+  }
   dragState=null;
-  panState=null;
-  q('#wb-container')?.classList.remove('is-panning');
 });
-function switchRelViewMode(mode){ S.relTab=mode; renderRelationView(); }
-async function updateRelCategoryView(catId){ if(!catId) return; S.relCatId=parseInt(catId,10); await renderRelationView(); }
-async function updateRelObjectView(objId){ if(!objId) return; await renderObjectWhiteboard(parseInt(objId)); }
 
-// ═══ MAP VIEW ══════════════════════════════════════════
-const mapState = { pointsByArea:{}, viewByMap:{} };
-let mapDragPointState = null;
-let mapPanState = null;
+async function selectMap(id){
+  const maps = await api.map.getAll(S.project.id);
+  S.map = maps.find(m => m.id === id) || null;
+  S.mapAreaId = null;
+  await renderMapView();
+}
+function selectMapArea(id){ S.mapAreaId=id; renderMapView(); }
+function setMapTool(tool){ S.mapTool=tool; renderMapView(); }
+
+function ensureKonva(){
+  if(window.Konva) return Promise.resolve();
+  if(window.__konvaLoading) return new Promise(resolve=>{ const iv=setInterval(()=>{ if(window.Konva){ clearInterval(iv); resolve(); } },50); });
+  window.__konvaLoading = true;
+  return new Promise((resolve,reject)=>{
+    const s = document.createElement('script');
+    s.src = 'https://unpkg.com/konva@9/konva.min.js';
+    s.onload = ()=>{ window.__konvaLoading = false; resolve(); };
+    s.onerror = ()=>{ window.__konvaLoading = false; reject(new Error('Failed to load Konva')); };
+    document.body.appendChild(s);
+  });
+}
 
 async function renderMapView(){
   if(!S.project){
@@ -1630,6 +2137,7 @@ async function renderMapView(){
     q('#main-inner').innerHTML=`<div class="empty" style="margin-top:80px"><div class="ei">${I.map}</div><h3>Mapping</h3><p>กรุณาเลือกโปรเจกต์ก่อน</p></div>`;
     return;
   }
+  await ensureKonva();
   const maps = await api.map.getAll(S.project.id);
   let lh = `<div class="ph"><h4>Map</h4><button class="btn btn-g btn-i" onclick="openMapModal()">${I.plus}</button></div>`;
   for(const m of maps){
@@ -1653,8 +2161,7 @@ async function renderMapView(){
     <span style="font-size:12px;color:var(--t3)">ต้องเลือก Area ก่อนใช้ Tool</span>
   </div>
   <div id="map-board" class="map-whiteboard">
-    <svg id="map-svg" class="map-svg"></svg>
-    <div id="map-points" class="map-points"></div>
+    <div id="map-konva-container" style="width:100%; height:100%;"></div>
   </div>
   <div class="rel-underboard">
     <div class="ph"><h4>Area</h4><div class="acts"><button class="btn btn-g" onclick="openMapAreaModal()">${I.plus} เพิ่ม Area</button></div></div>
@@ -1664,150 +2171,211 @@ async function renderMapView(){
   await renderMapBoard();
 }
 
-function renderAreaList(areas){
-  if(!areas.length) return `<div class="empty" style="padding:16px 8px"><p>ยังไม่มี Area</p></div>`;
-  return areas.map(a=>`<div class="rel-card ${S.mapAreaId===a.id?'active':''}" onclick="selectMapArea(${a.id})"><span class="rel-type-badge" style="border-color:${a.color_code||'#06b6d4'};color:${a.color_code||'#06b6d4'}">${x(a.area_name||'Area')}</span><div class="rel-card-content">จุด ${(mapState.pointsByArea[a.id]||[]).length} จุด</div><div class="rel-card-actions"><button class="btn btn-s btn-i" onclick="event.stopPropagation();openMapAreaModal(${a.id})">${I.edit}</button><button class="btn btn-s btn-i" onclick="event.stopPropagation();delMapArea(${a.id})">${I.delete}</button></div></div>`).join('');
-}
-
-async function selectMap(id){
-  const maps = await api.map.getAll(S.project.id);
-  S.map = maps.find(m=>m.id===id) || null;
-  S.mapAreaId = null;
-  await renderMapView();
-}
-function selectMapArea(id){ S.mapAreaId=id; renderMapView(); }
-function setMapTool(tool){ S.mapTool=tool; renderMapView(); }
-
 function getMapViewState(mapId){
   if(!mapState.viewByMap[mapId]) mapState.viewByMap[mapId] = { scale:1, tx:0, ty:0 };
   return mapState.viewByMap[mapId];
 }
-function worldToScreen(v,x,y){ return { x: x*v.scale + v.tx, y: y*v.scale + v.ty }; }
-function screenToWorld(v,x,y){ return { x: (x-v.tx)/v.scale, y: (y-v.ty)/v.scale }; }
 
 async function renderMapBoard(){
   if(!S.map) return;
   const areas = await api.map.getAreas(S.map.id);
   for(const a of areas) mapState.pointsByArea[a.id] = await api.map.getPoints(a.id);
-  const svg = q('#map-svg');
-  const pointsWrap = q('#map-points');
-  if(!svg || !pointsWrap) return;
+  
+  const container = q('#map-konva-container');
+  if(!container) return;
+
+  const width = container.clientWidth || 800;
+  const height = container.clientHeight || 540;
+  
   const v = getMapViewState(S.map.id);
-  svg.innerHTML = '';
-  pointsWrap.innerHTML = '';
+  
+  if (konvaStage) {
+    try { konvaStage.destroy(); } catch(e){}
+  }
+
+  const boardEl = q('#map-board');
+  if (boardEl) {
+    boardEl.oncontextmenu = (e)=>e.preventDefault();
+  }
+
+  konvaStage = new Konva.Stage({
+    container: 'map-konva-container',
+    width: width,
+    height: height,
+  });
+
+  const layer = new Konva.Layer();
+  konvaStage.add(layer);
+
+  konvaStage.scale({ x: v.scale, y: v.scale });
+  konvaStage.position({ x: v.tx, y: v.ty });
+
   for(const area of areas){
     const pts = mapState.pointsByArea[area.id] || [];
+    const color = area.color_code || '#06b6d4';
+    const isActiveArea = S.mapAreaId === area.id;
+
+    let poly = null;
     if(pts.length >= 2){
-      const screenPts = pts.map(p=>worldToScreen(v,p.x,p.y));
-      const color = area.color_code || '#06b6d4';
-      const poly = document.createElementNS('http://www.w3.org/2000/svg','polygon');
-      poly.setAttribute('points', screenPts.map(p=>`${p.x},${p.y}`).join(' '));
-      poly.setAttribute('fill', pts.length>=3 ? color : 'transparent');
-      poly.setAttribute('fill-opacity', pts.length>=3 ? '0.18' : '0');
-      poly.setAttribute('stroke', color);
-      poly.setAttribute('stroke-width', '2');
-      svg.appendChild(poly);
+      poly = new Konva.Line({
+        points: pts.map(p => [p.x, p.y]).flat(),
+        fill: pts.length >= 3 ? color : 'transparent',
+        opacity: pts.length >= 3 ? 0.18 : 0,
+        stroke: color,
+        strokeWidth: 2 / v.scale,
+        closed: true,
+      });
+      poly.on('click tap', (e) => {
+        if(e.evt.button === 0){
+          e.cancelBubble = true;
+          selectMapArea(area.id);
+        }
+      });
+      layer.add(poly);
     }
+
     for(const p of pts){
-      const pos = worldToScreen(v,p.x,p.y);
-      const el = document.createElement('div');
-      el.className = `map-point ${S.mapAreaId===area.id?'active':''}`;
-      el.style.left = `${pos.x}px`;
-      el.style.top = `${pos.y}px`;
-      el.style.borderColor = area.color_code || '#06b6d4';
-      el.dataset.areaId = String(area.id);
-      el.dataset.pointId = String(p.id||0);
-      pointsWrap.appendChild(el);
+      const circle = new Konva.Circle({
+        x: p.x,
+        y: p.y,
+        radius: (isActiveArea ? 7 : 5) / v.scale,
+        fill: isActiveArea ? '#ffffff' : color,
+        stroke: color,
+        strokeWidth: 2 / v.scale,
+        draggable: S.mapTool === 'move' && isActiveArea,
+        areaId: area.id,
+      });
+
+      circle.on('dragmove', (e) => {
+        const newPos = circle.position();
+        p.x = newPos.x;
+        p.y = newPos.y;
+        if(poly) {
+          poly.points(pts.map(pt => [pt.x, pt.y]).flat());
+        }
+        layer.batchDraw();
+      });
+
+      circle.on('dragend', () => {
+        api.map.setPoints(area.id, pts).then(() => {
+          const list = q('.map-area-list');
+          if(list) list.innerHTML = renderAreaList(areas);
+        });
+      });
+
+      circle.on('click tap', (e) => {
+        if(e.evt.button === 0){
+          e.cancelBubble = true;
+          if(S.mapTool === 'delete'){
+            const idx = pts.indexOf(p);
+            if(idx >= 0){
+              pts.splice(idx, 1);
+              api.map.setPoints(area.id, pts).then(renderMapBoard);
+            }
+          } else {
+            selectMapArea(area.id);
+          }
+        }
+      });
+
+      layer.add(circle);
     }
   }
-  bindMapBoardInteractions(areas);
-  const list = q('.map-area-list');
-  if(list) list.innerHTML = renderAreaList(areas);
-}
 
-function bindMapBoardInteractions(areas){
-  const board = q('#map-board');
-  if(!board || !S.map) return;
-  const v = getMapViewState(S.map.id);
-  board.oncontextmenu = (e)=>e.preventDefault();
-  board.onwheel = (e)=>{
-    e.preventDefault();
-    const rect = board.getBoundingClientRect();
-    const px = e.clientX - rect.left;
-    const py = e.clientY - rect.top;
-    const oldScale = v.scale;
-    const step = e.deltaY < 0 ? 1.1 : 0.9;
-    const newScale = Math.max(0.3, Math.min(4, oldScale * step));
-    const worldX = (px - v.tx) / oldScale;
-    const worldY = (py - v.ty) / oldScale;
-    v.scale = newScale;
-    v.tx = px - worldX * newScale;
-    v.ty = py - worldY * newScale;
-    renderMapBoard();
-  };
-  board.onmousedown = (e)=>{
-    if(e.button===2){
-      board.classList.add('is-panning');
-      mapPanState = { startX:e.clientX, startY:e.clientY };
-      return;
+  let isPanning = false;
+  let startPos = { x: 0, y: 0 };
+
+  konvaStage.on('mousedown', (e) => {
+    if (e.evt.button === 2) {
+      isPanning = true;
+      startPos = { x: e.evt.clientX, y: e.evt.clientY };
+      q('#map-board')?.classList.add('is-panning');
     }
-    if(e.button!==0) return;
-    if(!S.mapAreaId){ toast('เลือก Area ก่อนใช้งาน Tool','err'); return; }
-    const rect = board.getBoundingClientRect();
-    const { x:wx, y:wy } = screenToWorld(v, e.clientX-rect.left, e.clientY-rect.top);
-    const points = mapState.pointsByArea[S.mapAreaId] || [];
-    if(S.mapTool==='create'){
-      points.push({ x:wx, y:wy });
-      mapState.pointsByArea[S.mapAreaId] = points;
-      api.map.setPoints(S.mapAreaId, points).then(renderMapBoard);
-    }else if(S.mapTool==='delete'){
-      if(!points.length) return;
-      let idx=-1, best=Infinity;
-      points.forEach((p,i)=>{ const d=Math.hypot(p.x-wx,p.y-wy); if(d<best){ best=d; idx=i; } });
-      if(idx>=0 && best <= (16 / v.scale)){
-        points.splice(idx,1);
+  });
+
+  konvaStage.on('mousemove', (e) => {
+    if (isPanning) {
+      const dx = e.evt.clientX - startPos.x;
+      const dy = e.evt.clientY - startPos.y;
+      startPos = { x: e.evt.clientX, y: e.evt.clientY };
+      const newPos = {
+        x: konvaStage.x() + dx,
+        y: konvaStage.y() + dy,
+      };
+      konvaStage.position(newPos);
+      v.tx = newPos.x;
+      v.ty = newPos.y;
+      layer.batchDraw();
+    }
+  });
+
+  konvaStage.on('click tap', (e) => {
+    if (e.evt.button !== 0) return;
+    if (e.target === konvaStage) {
+      if (!S.mapAreaId) {
+        toast('เลือก Area ก่อนใช้งาน Tool', 'err');
+        return;
+      }
+      const pointer = konvaStage.getPointerPosition();
+      const wx = (pointer.x - konvaStage.x()) / konvaStage.scaleX();
+      const wy = (pointer.y - konvaStage.y()) / konvaStage.scaleX();
+      const points = mapState.pointsByArea[S.mapAreaId] || [];
+
+      if (S.mapTool === 'create') {
+        points.push({ x: wx, y: wy });
+        mapState.pointsByArea[S.mapAreaId] = points;
         api.map.setPoints(S.mapAreaId, points).then(renderMapBoard);
       }
-    }else{
-      let idx=-1, best=Infinity;
-      points.forEach((p,i)=>{ const d=Math.hypot(p.x-wx,p.y-wy); if(d<best){ best=d; idx=i; } });
-      if(idx>=0 && best <= (16 / v.scale)) mapDragPointState = { areaId:S.mapAreaId, index:idx };
+    }
+  });
+
+  konvaStage.on('wheel', (e) => {
+    e.evt.preventDefault();
+    const oldScale = konvaStage.scaleX();
+    const pointer = konvaStage.getPointerPosition();
+    const mousePointTo = {
+      x: (pointer.x - konvaStage.x()) / oldScale,
+      y: (pointer.y - konvaStage.y()) / oldScale,
+    };
+
+    const step = e.evt.deltaY < 0 ? 1.1 : 0.9;
+    const newScale = Math.max(0.3, Math.min(4, oldScale * step));
+
+    konvaStage.scale({ x: newScale, y: newScale });
+
+    const newPos = {
+      x: pointer.x - mousePointTo.x * newScale,
+      y: pointer.y - mousePointTo.y * newScale,
+    };
+    konvaStage.position(newPos);
+    v.scale = newScale;
+    v.tx = newPos.x;
+    v.ty = newPos.y;
+
+    layer.getChildren().forEach((node) => {
+      if (node instanceof Konva.Circle) {
+        const isActive = S.mapAreaId === node.attrs.areaId;
+        node.radius((isActive ? 7 : 5) / newScale);
+        node.strokeWidth(2 / newScale);
+      } else if (node instanceof Konva.Line) {
+        node.strokeWidth(2 / newScale);
+      }
+    });
+
+    layer.batchDraw();
+  });
+
+  const cleanupPan = () => {
+    if (isPanning) {
+      isPanning = false;
+      q('#map-board')?.classList.remove('is-panning');
     }
   };
+  window.removeEventListener('mouseup', cleanupPan);
+  window.addEventListener('mouseup', cleanupPan);
+
+  layer.batchDraw();
 }
-
-document.addEventListener('mousemove', async (e)=>{
-  if(mapPanState && S.map){
-    const v = getMapViewState(S.map.id);
-    v.tx += e.clientX - mapPanState.startX;
-    v.ty += e.clientY - mapPanState.startY;
-    mapPanState.startX = e.clientX;
-    mapPanState.startY = e.clientY;
-    renderMapBoard();
-  }
-  if(mapDragPointState && S.map){
-    const board = q('#map-board');
-    if(!board) return;
-    const rect = board.getBoundingClientRect();
-    const v = getMapViewState(S.map.id);
-    const { x:wx, y:wy } = screenToWorld(v, e.clientX-rect.left, e.clientY-rect.top);
-    const points = mapState.pointsByArea[mapDragPointState.areaId] || [];
-    if(!points[mapDragPointState.index]) return;
-    points[mapDragPointState.index].x = wx;
-    points[mapDragPointState.index].y = wy;
-    renderMapBoard();
-  }
-});
-
-document.addEventListener('mouseup', ()=>{
-  if(mapDragPointState){
-    const aid = mapDragPointState.areaId;
-    api.map.setPoints(aid, mapState.pointsByArea[aid] || []).then(renderMapBoard);
-  }
-  mapDragPointState = null;
-  mapPanState = null;
-  q('#map-board')?.classList.remove('is-panning');
-});
 
 async function openMapModal(id=null){
   let m=null;
@@ -1938,9 +2506,38 @@ async function saveProject(id){
   await api.project.update(id,{name:n,codename:q('#pc').value.trim()||null,memo:q('#pm').value.trim(),folderId:q('#pf').value||null,colorId:q('#sel-color').value||null});
   const tags = Array.from(document.querySelectorAll('[id^="proj-tag-"]:checked')).map(i=>parseInt(i.value,10));
   await api.project.setTags(id,tags);
-  closeModal(); S.project=await api.project.get(id); await reloadSidebar(); await renderProject(); toast('บันทึกเรียบร้อยแล้ว','ok');
+  closeModal();
+  const updated = await api.project.get(id);
+  if(updated){
+    const idx = S.projectTabs.findIndex(t => t.id === id);
+    if(idx >= 0) S.projectTabs[idx] = tabFromProject(updated);
+    if(S.project?.id === id) S.project = updated;
+  }
+  await reloadSidebar();
+  if(S.project?.id === id) await renderProject();
+  toast('บันทึกเรียบร้อยแล้ว','ok');
 }
-async function delProject(id){ if(!confirm('ลบโปรเจกต์? ข้อมูลทั้งหมดจะหาย')) return; await api.project.delete(id); closeModal(); S.project=null; S.category=null; S.object=null; await reloadSidebar(); renderWelcome(); toast('ลบเรียบร้อยแล้ว'); }
+async function delProject(id){
+  if(!confirm('ลบโปรเจกต์? ข้อมูลทั้งหมดจะหาย')) return;
+  const wasActive = S.project?.id === id;
+  await api.project.delete(id);
+  closeModal();
+  S.projectTabs = S.projectTabs.filter(t => t.id !== id);
+  await reloadSidebar();
+  if(wasActive){
+    S.project=null; S.category=null; S.object=null; S.timeline=null; S.map=null; S.mapAreaId=null;
+    const next = S.projectTabs[0] || null;
+    if(next) await switchProjectTab(next.id);
+    else {
+      S.activeProjectTabId = null;
+      renderProjectTabs();
+      renderWelcome();
+    }
+  } else {
+    renderProjectTabs();
+  }
+  toast('ลบเรียบร้อยแล้ว');
+}
 
 // ═══ MODALS: PROJECT DESCRIPTION ═══════════════════════
 async function openDescModal(id=null){
@@ -2272,6 +2869,7 @@ async function selectSearchHashtag(tid){
 }
 
 Object.assign(window, {
+  setUiSetting, setUiSizeFromSlider, toggleSettingsMenu, startRelListResize,
   openTemplateModal, addTemplate, delTemplate,
   openRelModal, createRelOBOB, createRelOBTL, createRelTLTL,
   updateSelectColorLabel,
