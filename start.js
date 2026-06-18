@@ -32,7 +32,11 @@ function resolveElectronBinary() {
 
 const electronPath = resolveElectronBinary();
 const args = process.argv.slice(2);
+
+
 if (!args.length) args.push('.');
+
+
 const env = { ...process.env };
 delete env.ELECTRON_RUN_AS_NODE;
 
