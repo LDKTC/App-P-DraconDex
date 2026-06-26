@@ -1,27 +1,27 @@
 {
-  "name": "novel-manager",
-  "version": "1.2.1",
+  "name": "DraconDex",
+  "version": "1.2.2",
   "description": "Novel data management app",
   "main": "main.js",
   "scripts": {
     "start": "node ./start.js",
-    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "postinstall": "node ./ensure-electron.js && electron-rebuild -f -w better-sqlite3",
     "build:portable": "electron-builder --win portable"
   },
   "dependencies": {
-    "better-sqlite3": "^12.10.0"
+    "better-sqlite3": "^12.11.1"
   },
   "devDependencies": {
-    "electron": "^29.0.0",
-    "electron-builder": "^24.13.3",
-    "electron-rebuild": "^3.2.9"
+    "@electron/rebuild": "^4.0.4",
+    "electron": "^42.5.0",
+    "electron-builder": "^26.15.3"
   },
   "build": {
-    "appId": "com.novelmanager.app",
-    "productName": "Novel Manager",
+    "appId": "com.dracondex.app",
+    "productName": "DraconDex",
     "asar": true,
     "directories": {
-      "output": "dist"
+      "output": "DragonDexPortable"
     },
     "files": [
       "index.html",
